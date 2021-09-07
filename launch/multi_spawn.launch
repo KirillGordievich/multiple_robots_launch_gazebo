@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<launch>
+
+  <arg name="ns_1" value="bot1" />
+  <arg name="ns_2" value="bot2" />
+  <arg name="ns_3" value="bot3" />
+
+
+  <node name="pose_listener" pkg="multiple_robots_launch_gazebo" type="listening_coordinate.py"/>
+
+  <!-- merge data from /mpc/laser_scan to severeal topics like bot_name/laser_scan -->
+  <node name="merge_laser" pkg="multiple_robots_launch_gazebo" type="merge_laser.py" /> 
+
+  <!-- SPAWN ROBOT 1-->
+  <group ns="$(arg ns_1)">
+
+    <param name="robot_description" command="$(find xacro)/xacro.py '$(find multiple_robots_launch_gazebo)/urdf/bot/red/bot.xacro' namesapce_deploy:=$(arg ns_1)"/>
+
+    <param name="tf_prefix" value="$(arg ns_1)_tf" />
+
+    <include file="$(find multiple_robots_launch_gazebo)/launch/multi_spawn_one.launch" >
+      <arg name="ns"  value="$(arg ns_1)" />
+      <arg name="init_pose" value="-x -5 -y 0 -z 0 -R 0 -P 0 -Y 0" />   <!-- x = x-coordinate, y = y-coordinate, z = z-coordinate, R = Roll, P = Pitch, Y = Yaw-->
+      <arg name="robot_name"  value="$(arg ns_1)" />
+    </include>
+
+  </group>
+ 
+  <!-- SPAWN ROBOT 2 -->
+  <group ns="$(arg ns_2)">
+
+    <param name="robot_description" command="$(find xacro)/xacro.py '$(find multiple_robots_launch_gazebo)/urdf/bot/green/bot.xacro' namesapce_deploy:=$(arg ns_2)"/>
+    <param name="tf_prefix" value="$(arg ns_2)_tf" />
+
+    <include file="$(find multiple_robots_launch_gazebo)/launch/multi_spawn_one.launch" >
+      <arg name="ns"  value="$(arg ns_2)" />
+      <arg name="init_pose" value="-x -7 -y -3 -z 0 -R 0 -P 0 -Y 0" />
+      <arg name="robot_name"  value="$(arg ns_2)" />
+    </include>
+
+  </group>
+
+  <!-- SPAWN ROBOT 3 -->
+  <group ns="$(arg ns_3)">
+
+    <param name="robot_description" command="$(find xacro)/xacro.py '$(find multiple_robots_launch_gazebo)/urdf/bot/orange/bot.xacro' namesapce_deploy:=$(arg ns_3)"/>
+    <param name="tf_prefix" value="$(arg ns_3)_tf" />
+
+    <include file="$(find multiple_robots_launch_gazebo)/launch/multi_spawn_one.launch" >
+      <arg name="ns"  value="$(arg ns_3)" />
+      <arg name="init_pose" value="-x -7.5 -y -5 -z 0 -R 0 -P 0 -Y 0" />
+      <arg name="robot_name"  value="$(arg ns_3)" />
+    </include>
+
+  </group>
+
+</launch>
